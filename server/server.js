@@ -927,7 +927,7 @@ createCategoriesTable();
 createUOMTable();
 createInventoryTable();
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({ message: 'SnapFun ERP API is running' });
 });
 
@@ -974,6 +974,16 @@ app.use('/api/chatbot', requireAuth, chatbotRoutes);
 
 const promotionsRoutes = require('./routes/promotions');
 app.use('/api/promotions', requireAuth, promotionsRoutes);
+
+// ============================================
+// SERVE FRONTEND (React build) — TAMBAHAN BARU
+// Harus di sini: SETELAH semua route /api/..., SEBELUM error handler
+// ============================================
+app.use(express.static(path.join(__dirname, '../dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
