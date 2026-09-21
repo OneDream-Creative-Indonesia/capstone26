@@ -18,10 +18,6 @@ function extractToken(req) {
 }
 
 function requireAuth(req, res, next) {
-  // TEMPORARILY DISABLED FOR PRESENTATION DEMO
-  // Re-enable after presentation by uncommenting the authentication logic below
-  return next();
-
   const token = extractToken(req);
   if (!token) {
     if (req.method === 'GET') return next();
@@ -52,11 +48,9 @@ function requireAuth(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-  // TEMPORARILY DISABLED FOR PRESENTATION DEMO
-  // Re-enable after presentation by removing this comment
-  // if (req.user?.role !== 'admin') {
-  //   return res.status(403).json({ success: false, message: 'Admin privileges required' });
-  // }
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Admin privileges required' });
+  }
   next();
 }
 
