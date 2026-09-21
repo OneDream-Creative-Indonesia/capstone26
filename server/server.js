@@ -10,7 +10,9 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://erp.snapfunstudio.id'
+  'http://localhost:5174',
+  'https://erp.snapfunstudio.id',
+  'https://absen.snapfunstudio.id'
 ];
 
 app.use(cors({
@@ -28,6 +30,8 @@ app.use(express.json());
 app.use('/pr_attachment', express.static(path.join(__dirname, 'pr_attachment')));
 app.use('/asset_attachment', express.static(path.join(__dirname, 'asset_attachment')));
 app.use('/inventory_attachments', express.static(path.join(__dirname, 'inventory_attachments')));
+app.use('/attendance_photos', express.static(path.join(__dirname, 'attendance_photos')));
+app.use('/leave_attachments', express.static(path.join(__dirname, 'leave_attachments')));
 
 app.locals.db = db;
 
@@ -927,6 +931,9 @@ createCategoriesTable();
 createUOMTable();
 createInventoryTable();
 
+const { createAttendanceTables } = require('./config/attendanceSchema');
+createAttendanceTables(db);
+
 app.get('/api', (req, res) => {
   res.json({ message: 'SnapFun ERP API is running' });
 });
@@ -974,6 +981,12 @@ app.use('/api/chatbot', requireAuth, chatbotRoutes);
 
 const promotionsRoutes = require('./routes/promotions');
 app.use('/api/promotions', requireAuth, promotionsRoutes);
+
+const attendanceRoutes = require('./routes/attendance');
+app.use('/api/attendance', requireAuth, attendanceRoutes);
+
+const leavesRoutes = require('./routes/leaves');
+app.use('/api/leaves', requireAuth, leavesRoutes);
 
 // ============================================
 // SERVE FRONTEND (React build) — TAMBAHAN BARU
